@@ -9,6 +9,8 @@ import SimilarExercises from "../components/SimilarExercises";
 const ExerciseDetail = () => {
   const [exerciseDetail, setExerciseDetail] = useState({});
   const [exerciseVideos, setExerciseVideo] = useState([]);
+  const [targetMuscleExercises, setTargetMuscleExercises] = useState([]);
+  const [equipmentExercises, setEquipmentExercises] = useState([]);
   const { id } = useParams();
   useEffect(() => {
     const fetchExerciseData = async () => {
@@ -28,19 +30,29 @@ const ExerciseDetail = () => {
       );
       setExerciseVideo(exerciseVideoData.contents);
       //console.log({ exerciseVideoData }); //for debugging
+      const targetMuscleExercisesData = await fetchData(
+        `${exerciseDbUrl}/exercises/target/${exerciseDetailData.target}`,
+        exerciseOptions
+      );
+      setTargetMuscleExercises(targetMuscleExercisesData);
+      const equipmentMuscleExercisesData = await fetchData(
+        `${exerciseDbUrl}/exercises/equipment/${exerciseDetailData.equipment}`,
+        exerciseOptions
+      );
+      setEquipmentExercises(equipmentMuscleExercisesData);
     };
     fetchExerciseData();
   }, [id]); //will recall the useEffect when id changes
   return (
     <Box>
       <Detail exerciseDetail={exerciseDetail} />
-      <ExerciseVideo 
-      exerciseVideos={exerciseVideos}
-      name={exerciseDetail.name}
-      
+      <ExerciseVideo
+        exerciseVideos={exerciseVideos}
+        name={exerciseDetail.name}
       />
       <SimilarExercises
-        
+        targetMuscleExercises={targetMuscleExercises}
+        equipmentExercises={equipmentExercises}
       />
     </Box>
   );
